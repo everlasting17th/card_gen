@@ -50,5 +50,9 @@
   },
   "devDependencies": {
     "@types/react-color": "^3.0.12"
+  },
+  "engines": {
+    "npm": ">=10.7.0",
+    "node": ">=20.15.0"
   }
 }
