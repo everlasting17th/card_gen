@@ -21,9 +21,6 @@ export const CardCanvas = observer(() => {
     useEffect(() => {
         const canvas = canvasRef.current
         const context: CanvasRenderingContext2D = (canvas as any).getContext('2d');
-        //Our first draw
-        context.fillStyle = '#000000'
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height)
 
         draw(context)
     }, [draw, ...Object.values(store.settingsStore)])
