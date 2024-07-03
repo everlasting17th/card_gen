@@ -1,11 +1,12 @@
 import { observer } from "mobx-react-lite";
-import { Canvas } from "react-canvas-typescript";
 import { useStore } from "../store/store";
+import { useEffect, useRef } from "react";
 
 export const CardCanvas = observer(() => {
     const store = useStore();
+    const canvasRef = useRef(null);
 
-    const draw = (ctx: CanvasRenderingContext2D, frameCount: any, elapsedTime: any) => {
+    const draw = (ctx: CanvasRenderingContext2D) => {
         const width = store.settingsStore.width;
         const height = store.settingsStore.height;
 
@@ -17,7 +18,17 @@ export const CardCanvas = observer(() => {
         ctx.fillRect(borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2);
     }
 
+    useEffect(() => {
+        const canvas = canvasRef.current
+        const context: CanvasRenderingContext2D = (canvas as any).getContext('2d');
+        //Our first draw
+        context.fillStyle = '#000000'
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height)
+
+        draw(context)
+    }, [draw, ...Object.values(store.settingsStore)])
+
     return (
-        <Canvas width={store.settingsStore.width} height={store.settingsStore.height} contextType='2d' draw={draw} />
+        <canvas ref={canvasRef} width={store.settingsStore.width} height={store.settingsStore.height} />
     );
 })
