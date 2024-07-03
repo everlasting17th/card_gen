@@ -1,0 +1,15 @@
+.color-field {
+    display: flex;
+    flex-direction: row;
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    &__label {
+        align-self: flex-start;
+        width: 120px;
+    }
+
+    &__value {
+        margin-left: 40px;
+    }
+}

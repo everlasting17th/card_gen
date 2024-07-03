@@ -1,0 +1,20 @@
+.section {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    &__header {
+        align-self: flex-start;
+        height: 34.5px;
+        line-height: 34.5px;
+    }
+
+
+    &__middle {
+        width: 100%;
+    }
+
+    &__button {
+        align-self: flex-end;
+    }
+}
