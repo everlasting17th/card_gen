@@ -1,6 +1,7 @@
 import { Main, Text, Container, Divider, Center } from "@prismane/core";
 import { Section } from "./Section";
 import { BackgroundSettingsSection } from "./BackgroundSettingsSection";
+import { ForegroundSettingsSection } from "./ForegroundSettingsSection";
 
 export const SettingsTab = () => {
 
@@ -14,6 +15,7 @@ export const SettingsTab = () => {
                     <Divider />
                 </Center>
                 <Section name='Background' content={<BackgroundSettingsSection />} />
+                <Section name='Foreground' content={<ForegroundSettingsSection />} />
             </Container>
         </Main>
     )

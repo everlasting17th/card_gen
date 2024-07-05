@@ -1,31 +1,36 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
 import { useEffect, useRef } from "react";
+import { Box, Center } from "@prismane/core";
 
 export const CardCanvas = observer(() => {
     const store = useStore();
-    const canvasRef = useRef(null);
 
-    const draw = (ctx: CanvasRenderingContext2D) => {
-        const width = store.settingsStore.width;
-        const height = store.settingsStore.height;
+    const px = (x: number) => x.toString() + 'px';
 
-        ctx.fillStyle = store.settingsStore.borderColor;
-        ctx.fillRect(0, 0, width, store.settingsStore.height);
+    const borderColor = store.settingsStore.borderColor;
+    const backgroundColor = store.settingsStore.backgroundColor;
+    const borderWidth = store.settingsStore.borderWidth;
+    const width = store.settingsStore.width - borderWidth * 2;
+    const height = store.settingsStore.height - borderWidth * 2;
+    const foregroundColor = store.settingsStore.foregroundColor;
+    const foregroundMargin = store.settingsStore.foregroundMargin;
+    const foregroundBorderWidth = store.settingsStore.foregroundBorderWidth;
+    const foregroundBorderColor = store.settingsStore.foregroundBorderColor;
 
-        const borderWidth = store.settingsStore.borderWidth;
-        ctx.fillStyle = store.settingsStore.backgroundColor;
-        ctx.fillRect(borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2);
-    }
-
-    useEffect(() => {
-        const canvas = canvasRef.current
-        const context: CanvasRenderingContext2D = (canvas as any).getContext('2d');
-
-        draw(context)
-    }, [draw, ...Object.values(store.settingsStore)])
 
     return (
-        <canvas ref={canvasRef} width={store.settingsStore.width} height={store.settingsStore.height} />
+        <div id='canvas-capture'>
+            <Box bg={backgroundColor} w={px(width)} h={px(height)} bd={px(borderWidth) + ' solid ' + borderColor} >
+                <Center>
+                    <Box
+                        bg={foregroundColor}
+                        w={px(width - foregroundMargin * 2 - foregroundBorderWidth * 2)}
+                        h={px(height - foregroundMargin * 2 - foregroundBorderWidth * 2)}
+                        mt={px(foregroundMargin)}
+                        bd={px(foregroundBorderWidth) + ' solid ' + foregroundBorderColor}></Box>
+                </Center>
+            </Box>
+        </div >
     );
 })
