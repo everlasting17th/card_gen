@@ -5,18 +5,18 @@ import { makePersistable } from "mobx-persist-store";
 export class SettingsStore {
     @observable width: number = 600;
     @observable height: number = 1000;
-    @observable borderWidth: number = 2;
+    @observable borderWidth: number = 20;
 
-    @observable backgroundColor: string = '#FFFFFF';
+    @observable backgroundColor: string = '#202121';
     @observable borderColor: string = '#000000';
 
-    @observable foregroundColor: string = '#FFFFFF';
-    @observable foregroundMargin: number = 10;
-    @observable foregroundBorderColor: string = '#000000';
-    @observable foregroundBorderWidth: number = 2;
+    @observable foregroundColor: string = '#d8d8d7';
+    @observable foregroundMargin: number = 20;
+    @observable foregroundBorderColor: string = '#c5a062';
+    @observable foregroundBorderWidth: number = 5;
 
     @observable contentTitle: string = '';
-    @observable contentTitleColor: string = '#000000';
+    @observable contentTitleColor: string = '#de2525';
     @observable contentBody: string = '';
     @observable contentFontSize: number = 16;
 
