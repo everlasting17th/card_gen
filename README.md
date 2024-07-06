@@ -16,3 +16,7 @@ You provide card description and AI handles formatting and image generation.
 2) Click Save (API Format) to download pipeline JSON file
 3) In the JSON file find your promt, negative promt and random seed. Replace values with `!positive_prompt!`, `!negative_prompt!` and `!random_seed!` accordingly
 4) Now paste resulting JSON into the Comfy Pipeline field
+
+### Plans / TODO's
+1) Configurable LORAs (Integration with Power LORA Node?)
+2) Batching
