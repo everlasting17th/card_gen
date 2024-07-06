@@ -1,6 +1,7 @@
 {
   "name": "card-generator",
   "version": "0.1.2",
+  "homepage": "https://everlasting17th.github.io/card_gen",
   "private": true,
   "dependencies": {
     "@fontsource/inter": "^5.0.18",
@@ -29,6 +30,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -55,7 +58,8 @@
   },
   "devDependencies": {
     "@types/react-color": "^3.0.12",
-    "@types/showdown": "^2.0.6"
+    "@types/showdown": "^2.0.6",
+    "gh-pages": "^6.1.1"
   },
   "engines": {
     "npm": ">=10.7.0",
