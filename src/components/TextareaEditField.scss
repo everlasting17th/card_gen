@@ -1,4 +1,4 @@
-.text-field {
+.textarea-field {
     display: flex;
     flex-direction: row;
     margin-top: 8px;
@@ -13,5 +13,9 @@
         margin-left: 40px;
         margin-right: 40px;
         flex-grow: 1;
+
+        textarea {
+            height: 100%;
+        }
     }
 }

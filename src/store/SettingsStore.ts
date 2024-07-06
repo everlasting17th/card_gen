@@ -15,6 +15,26 @@ export class SettingsStore {
     @observable foregroundBorderColor: string = '#000000';
     @observable foregroundBorderWidth: number = 2;
 
+    @observable contentTitle: string = '';
+    @observable contentTitleColor: string = '#000000';
+    @observable contentBody: string = '';
+    @observable contentFontSize: number = 16;
+
+    @observable imagePrompt: string = '';
+    @observable openAiKey: string = '';
+    @observable openAiPrompt: string = '';
+
+    @observable comfyUrl: string = '';
+    @observable fullImagePrompt: string = '';
+    @observable imageNegativePrompt: string = '';
+    @observable comfyPipeline: string = '';
+
+    @observable awaitedPrompts: { promptId: string }[] = []
+    @observable donwloadedBlobs: Blob[] = [];
+    @observable readyImages: string[] = [];
+    @observable downloadingBlobs: number = 0;
+    @observable selectedImage: number | null = null;
+
     constructor(rootStore: RootStore) {
         makeAutoObservable(this);
         makePersistable(this, {
@@ -28,7 +48,18 @@ export class SettingsStore {
                 'foregroundColor',
                 'foregroundMargin',
                 'foregroundBorderColor',
-                'foregroundBorderWidth'
+                'foregroundBorderWidth',
+                'contentTitle',
+                'contentTitleColor',
+                'contentBody',
+                'contentFontSize',
+                'imagePrompt',
+                'openAiKey',
+                'openAiPrompt',
+                'comfyUrl',
+                'fullImagePrompt',
+                'imageNegativePrompt',
+                'comfyPipeline'
             ],
             storage: window.localStorage
         })
