@@ -1,4 +1,4 @@
-# Card-Gen
+# 🎴 Card-Gen
 Small npm project that allows you to create cards for tabletop games using AI.
 You provide card description and AI handles formatting and image generation.
 
