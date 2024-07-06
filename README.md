@@ -11,6 +11,11 @@ You provide card description and AI handles formatting and image generation.
 5) Setup urls and api keys in the "Configure API" menu
 6) Enjoy
 
+#### What should I do with the prompts ?
+1) **Image prompt**. Describe art style, shading, amount of details and basically everything what should stay the same between images. Insert `{0}` in your prompt. During generation, card illustration prompt will be inserted here.
+2) **Negative prompt**. Anything you dont want in your images, search for basic negative prompts if not sure how to start.
+3) *(optional)* **Open AI prompt**. This prompt will only be used if you set up Open Ai API key in the settings. You have to describe a task of distilling text description into SD tags to Chat GPT. For examples look into examples/folder. End your prompt with `{0}`
+
 ## Usage of Comfy UI Pipeline
 1) Enable dev mode in the Comfy UI settings
 2) Click Save (API Format) to download pipeline JSON file
