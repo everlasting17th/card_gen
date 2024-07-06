@@ -10,3 +10,9 @@ You provide card description and AI handles formatting and image generation.
 4) Run the project locally `npm install && npm run start` (or use [Github Pages version](https://everlasting17th.github.io/card_gen/))
 5) Setup urls and api keys in the "Configure API" menu
 6) Enjoy
+
+## Usage of Comfy UI Pipeline
+1) Enable dev mode in the Comfy UI settings
+2) Click Save (API Format) to download pipeline JSON file
+3) In the JSON file find your promt, negative promt and random seed. Replace values with `!positive_prompt!`, `!negative_prompt!` and `!random_seed!` accordingly
+4) Now paste resulting JSON into the Comfy Pipeline field
