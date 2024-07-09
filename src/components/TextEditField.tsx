@@ -2,7 +2,7 @@ import './TextEditField.scss'
 import { TextField, Text, usePrismaneColor } from "@prismane/core"
 
 interface IProps {
-    label: string;
+    label?: string;
     value: string;
     type: string;
     onValueChange?: (value: string) => void;
@@ -14,9 +14,14 @@ export const TextEditField = (props: IProps) => {
 
     return (
         <div className='text-field'>
-            <div className="text-field__label">
-                <Text as='p' cl={getColor('coal', 400)}>{props.label}</Text>
-            </div>
+            {
+                props.label != undefined
+                    ? (<div className="text-field__label">
+                        <Text as='p' cl={getColor('coal', 400)}>{props.label}</Text>
+                    </div>)
+                    : <div />
+            }
+
             <div className="text-field__input">
                 <TextField h='24px' type={props.type} value={props.value} onChange={(ev) => {
                     if (props.onValueChange) {

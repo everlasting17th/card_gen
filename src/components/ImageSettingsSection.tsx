@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite";
 import { TextareEditField } from "./TextareaEditField";
 import { useStore } from "../store/store";
-import { Box, Button, Flex, Modal, Grid, Text, Spinner, Skeleton } from "@prismane/core";
+import { Box, Button, Flex, Modal, Grid, Text, Spinner, Skeleton, TextField, usePrismaneColor, ActionButton, SelectField } from "@prismane/core";
 import { Pen } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 import { TextEditField } from "./TextEditField";
-import { OpenAiLogo, PaintBrush } from "@phosphor-icons/react";
+import { GearSix, OpenAiLogo, PaintBrush, Plus, Trash } from "@phosphor-icons/react";
 import { openAiCompletion } from "../api/openai.api";
 import * as comfyApi from '../api/comfy.api'
 import { useInterval } from "usehooks-ts";
@@ -17,12 +17,12 @@ export const ImageSettingsSection = observer(() => {
     const [isOpenAiBusy, setIsOpenAiBusy] = useState<boolean>(false);
 
     const canGeneratePropmpt = (): boolean => store.settingsStore.openAiKey != '' && store.settingsStore.openAiPrompt != '' && !isOpenAiBusy;
-    const canGenerateImage = (): boolean => store.settingsStore.comfyUrl != '' && store.settingsStore.comfyPipeline != '';
+    const canGenerateImage = (): boolean => store.settingsStore.comfyUrl != '' && store.settingsStore.selectedPipeline !== null;
 
     const generateImage = async () => {
         const positive = store.settingsStore.fullImagePrompt.replace('{0}', store.settingsStore.imagePrompt).trim().replaceAll('\n', ' ');
 
-        const prompt = store.settingsStore.comfyPipeline
+        const prompt = store.settingsStore.comfyPipelines[store.settingsStore.selectedPipeline!].pipeline
             .replaceAll('!positive_prompt!', positive)
             .replaceAll('!negative_prompt!', store.settingsStore.imageNegativePrompt.trim().replaceAll('\n', ' '))
             .replaceAll('!random_seed!', Math.floor(Math.random() * 100000000).toString());
@@ -94,7 +94,19 @@ export const ImageSettingsSection = observer(() => {
 
     }, 3000);
 
-    const urlCreator = window.URL || window.webkitURL;
+    const addPipeline = () => {
+        store.settingsStore.comfyPipelines.push({
+            name: '',
+            pipeline: '',
+            trigger: ''
+        });
+    }
+
+    const removePipeline = (index: number) => {
+        store.settingsStore.comfyPipelines.splice(index, 1);
+    }
+
+    const { getColor } = usePrismaneColor();
 
     return (
         <div>
@@ -110,6 +122,16 @@ export const ImageSettingsSection = observer(() => {
             />
             <Flex mt='15px' mb='15px' w='100%' align='end' gap='10px' direction="row-reverse">
                 <Button color='green' icon={<PaintBrush />} disabled={!canGenerateImage()} onClick={async () => await generateImage()}>Generate Image</Button>
+                <SelectField
+                    value={store.settingsStore.selectedPipeline !== null ? store.settingsStore.comfyPipelines[store.settingsStore.selectedPipeline].name : ''}
+                    icon={<GearSix />}
+                    placeholder="Choose a pipeline"
+                    options={store.settingsStore.comfyPipelines.map((pipeline, i) => { return { element: pipeline.name, value: i.toString() } })}
+                    style={{ maxWidth: '320px', height: '40px' }}
+                    onChange={(e) => {
+                        store.settingsStore.selectedPipeline = parseInt(e.target.value)
+                    }}
+                />
             </Flex>
             <Grid templateColumns={3} w='100%' gap='15px'>
                 {
@@ -134,8 +156,9 @@ export const ImageSettingsSection = observer(() => {
                 }
             </Grid>
 
-            <Modal open={isApiConfigOpen} onClose={() => setApiConfigOpen(false)} closable>
+            <Modal style={{ maxHeight: '1200px', overflowY: 'auto', overflowX: 'hidden' }} open={isApiConfigOpen} onClose={() => setApiConfigOpen(false)} closable>
                 <Box w='800px'>
+                    <Text as='h3'>General</Text>
                     <TextEditField
                         label='Open AI key'
                         type="text"
@@ -166,12 +189,45 @@ export const ImageSettingsSection = observer(() => {
                         onValueChange={(value) => store.settingsStore.imageNegativePrompt = value}
                         height={100}
                     />
-                    <TextareEditField
-                        label="Comfy pipeline"
-                        value={store.settingsStore.comfyPipeline}
-                        onValueChange={(value) => store.settingsStore.comfyPipeline = value}
-                        height={200}
-                    />
+                    <Flex style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text as='h3'>Pipelines</Text>
+                        <Button icon={<Plus />} onClick={() => addPipeline()}>Add Pipeline</Button>
+                    </Flex>
+                    {
+                        store.settingsStore.comfyPipelines.length > 0
+                            ? (
+                                <Flex style={{ gap: '20px' }}>
+                                    <Text w='240px' as='p' cl={getColor('coal', 400)}>Name</Text>
+                                    <Text w='240px' as='p' cl={getColor('coal', 400)}>Trigger</Text>
+                                    <Text w='240px' as='p' cl={getColor('coal', 400)}>Pipeline</Text>
+                                </Flex>)
+                            : (<div />)
+                    }
+                    {
+                        store.settingsStore.comfyPipelines.map((pipeline, i) => {
+                            return (
+                                <Flex key={i} h='120px'>
+                                    <TextEditField
+                                        value={pipeline.name}
+                                        type='text'
+                                        onValueChange={(value) => pipeline.name = value}
+                                    />
+                                    <TextEditField
+                                        value={pipeline.trigger}
+                                        type='text'
+                                        onValueChange={(value) => pipeline.trigger = value}
+                                    />
+                                    <TextareEditField
+                                        value={pipeline.pipeline}
+                                        height={40}
+                                        placeholder="paste pipeline here"
+                                        onValueChange={(value) => pipeline.pipeline = value}
+                                    />
+                                    <ActionButton mt='10px' size='xs' bg='red' icon={<Trash />} onClick={() => removePipeline(i)} />
+                                </Flex>
+                            )
+                        })
+                    }
                 </Box>
             </Modal>
         </div>

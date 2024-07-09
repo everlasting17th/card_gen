@@ -1,6 +1,7 @@
 import { makeAutoObservable, observable } from "mobx";
 import { RootStore } from "./RootStore";
 import { makePersistable } from "mobx-persist-store";
+import { ComfyPipeline } from "../model/ComfyPipeline";
 
 export class SettingsStore {
     @observable width: number = 600;
@@ -27,7 +28,8 @@ export class SettingsStore {
     @observable comfyUrl: string = '';
     @observable fullImagePrompt: string = '';
     @observable imageNegativePrompt: string = '';
-    @observable comfyPipeline: string = '';
+    @observable comfyPipelines: ComfyPipeline[] = [];
+    @observable selectedPipeline: number | null = null;
 
     @observable awaitedPrompts: { promptId: string }[] = []
     @observable donwloadedBlobs: Blob[] = [];
@@ -59,7 +61,8 @@ export class SettingsStore {
                 'comfyUrl',
                 'fullImagePrompt',
                 'imageNegativePrompt',
-                'comfyPipeline'
+                'comfyPipelines',
+                'selectedPipeline'
             ],
             storage: window.localStorage
         })

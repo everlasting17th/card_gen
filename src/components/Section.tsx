@@ -6,13 +6,14 @@ import React, { useState } from 'react';
 interface IProps {
     name: string;
     content: React.ReactNode;
+    minHeight?: number;
 }
 
 export const Section = (props: IProps) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
     return (
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', minHeight: props.minHeight != undefined ? `${props.minHeight}px` : undefined }}>
             <div className='section'>
                 <div className='section__header'>
                     <Text as='p' >{props.name}</Text>
@@ -26,7 +27,7 @@ export const Section = (props: IProps) => {
             {isExpanded ? null : (<Center w='100%' h='20px'>
                 <Divider variant='dotted' />
             </Center>)}
-            <Collapse h='auto' open={isExpanded}>
+            <Collapse style={{ height: isExpanded ? '100%' : undefined }} open={isExpanded}>
                 {props.content}
                 <Center w='100%' h='20px'>
                     <Divider variant='dotted' />

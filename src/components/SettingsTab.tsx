@@ -19,7 +19,7 @@ export const SettingsTab = () => {
                 <Section name='Background' content={<BackgroundSettingsSection />} />
                 <Section name='Foreground' content={<ForegroundSettingsSection />} />
                 <Section name='Content' content={<ContentSettingsSection />} />
-                <Section name='Image' content={<ImageSettingsSection />} />
+                <Section name='Image' content={<ImageSettingsSection />} minHeight={400} />
             </Container>
         </Main>
     )
