@@ -68,14 +68,14 @@ export const CardCanvas = observer(() => {
                                 <Center>
                                     <Text cl={titleColor} as='h2' mt='10px'>{title}</Text>
                                 </Center>
-                                <div style={{ marginLeft: (15 + contentFontSize).toString() + 'px', fontSize: contentFontSize.toString() + 'pt' }} dangerouslySetInnerHTML={{ __html: contentHtml }}></div>
+                                <div style={{ marginLeft: (15 + contentFontSize).toString() + 'px', marginRight: (15 + contentFontSize).toString() + 'px', fontSize: contentFontSize.toString() + 'pt' }} dangerouslySetInnerHTML={{ __html: contentHtml }}></div>
                             </Box>
                         </div>
                     </Center>
-                </Box>
+                </Box >
             </div >
             <Button mt='20px' icon={<Download />} onClick={async () => { await saveAsImage() }}>Download</Button>
             <a id="link"></a>
-        </div>
+        </div >
     );
 })
