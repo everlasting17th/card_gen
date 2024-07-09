@@ -25,7 +25,7 @@ function App() {
                     <Grid.Item bg='base' columnStart={1} columnEnd={6}>
                         <CardCanvas />
                     </Grid.Item>
-                    <Grid.Item bg={getColor('sepia', 900)} columnStart={6} columnEnd={9}>
+                    <Grid.Item bg={getColor('sepia', 900)} style={{ overflowY: 'auto' }} columnStart={6} columnEnd={9}>
                         <SettingsTab />
                     </Grid.Item>
                 </Grid>
