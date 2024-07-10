@@ -29,5 +29,11 @@ export const ForegroundSettingsSection = observer(() => {
             value={store.settingsStore.data.foreground.borderColor}
             onValueChange={(value) => { store.settingsStore.data.foreground.borderColor = value }}
         />
+        <TextEditField
+            label='Image URL'
+            type='text'
+            value={store.settingsStore.data.foreground.imageUrl}
+            onValueChange={(value) => { store.settingsStore.data.foreground.imageUrl = value }}
+        />
     </div>)
 });

@@ -18,6 +18,7 @@ export class SettingsStore {
             margin: number;
             borderColor: string;
             borderWidth: number;
+            imageUrl: string;
         },
         content: {
             title: string;
@@ -34,6 +35,7 @@ export class SettingsStore {
             openAi: {
                 key: string;
                 prompt: string;
+                formatPrompt: string;
             },
             comfy: {
                 url: string;
@@ -58,7 +60,8 @@ export class SettingsStore {
                 color: '#d8d8d7',
                 margin: 20,
                 borderColor: '#c5a062',
-                borderWidth: 5
+                borderWidth: 5,
+                imageUrl: '',
             },
             content: {
                 title: '',
@@ -74,7 +77,8 @@ export class SettingsStore {
             settings: {
                 openAi: {
                     key: '',
-                    prompt: ''
+                    prompt: '',
+                    formatPrompt: ''
                 },
                 comfy: {
                     url: '',

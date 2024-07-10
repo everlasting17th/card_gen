@@ -11,7 +11,7 @@ export const ContentSettingsSection = observer(() => {
     const store = useStore();
 
     const formatMd = async () => {
-        const prompt = `You will be given a text description of a skill or ability. Your task is to format this text to the markdown format. You can use any markdown features: bold, italic, list, colors, headers. Do not change original text, do not add anything. Please only respond with formatted text, no brackets or eny enclosing. \n ${store.settingsStore.data.content.body}`
+        const prompt = store.settingsStore.data.settings.openAi.formatPrompt.replace('{0}', store.settingsStore.data.content.body);
 
         var response = await openAiCompletion(store.settingsStore.data.settings.openAi.key, prompt);
         const res = await response.json();

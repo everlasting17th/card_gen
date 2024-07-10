@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { TextareEditField } from "./TextareaEditField";
 import { useStore } from "../store/store";
-import { Box, Button, Flex, Modal, Grid, Text, Spinner, Skeleton, TextField, usePrismaneColor, ActionButton, SelectField } from "@prismane/core";
+import { Box, Button, Flex, Modal, Grid, Text, Spinner, Skeleton, TextField, usePrismaneColor, ActionButton, SelectField, TextareaField } from "@prismane/core";
 import { Pen } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 import { TextEditField } from "./TextEditField";
@@ -167,6 +167,12 @@ export const ImageSettingsSection = observer(() => {
                         value={store.settingsStore.data.settings.openAi.prompt}
                         onValueChange={(value) => store.settingsStore.data.settings.openAi.prompt = value}
                         height={500}
+                    />
+                    <TextareEditField
+                        label="Open AI MD format prompt"
+                        value={store.settingsStore.data.settings.openAi.formatPrompt}
+                        onValueChange={(value) => store.settingsStore.data.settings.openAi.formatPrompt = value}
+                        height={100}
                     />
                     <TextEditField
                         label='Comfy Url'

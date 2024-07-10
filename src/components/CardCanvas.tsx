@@ -19,6 +19,7 @@ export const CardCanvas = observer(() => {
     const foregroundMargin = store.settingsStore.data.foreground.margin;
     const foregroundBorderWidth = store.settingsStore.data.foreground.borderWidth;
     const foregroundBorderColor = store.settingsStore.data.foreground.borderColor;
+    const foregroundImage = store.settingsStore.data.foreground.imageUrl;
 
     const title = store.settingsStore.data.content.title;
     const titleColor = store.settingsStore.data.content.titleColor;
@@ -61,7 +62,8 @@ export const CardCanvas = observer(() => {
                                 w={px(width - foregroundMargin * 2 - foregroundBorderWidth * 2)}
                                 h={px(height - foregroundMargin * 2 - foregroundBorderWidth * 2)}
                                 mt={px(foregroundMargin)}
-                                bd={px(foregroundBorderWidth) + ' solid ' + foregroundBorderColor}>
+                                bd={px(foregroundBorderWidth) + ' solid ' + foregroundBorderColor}
+                                style={{ backgroundImage: `url("${foregroundImage}")` }}>
 
                                 <Center>
                                     <Text cl={titleColor} as='h2' mt='10px'>{title}</Text>
