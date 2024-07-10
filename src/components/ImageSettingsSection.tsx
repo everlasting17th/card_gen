@@ -135,14 +135,6 @@ export const ImageSettingsSection = observer(() => {
             </Flex>
             <Grid templateColumns={3} w='100%' gap='15px'>
                 {
-                    Array(store.settingsStore.data.operational.awaitedPrompts.length).fill(0).map((k: number, i: number) => {
-                        return (
-                            <Grid.Item w='100%' key={i}>
-                                <Skeleton w={200} h={200} />
-                            </Grid.Item>)
-                    })
-                }
-                {
                     store.settingsStore.data.operational.readyImages.map((url, i) => {
                         return (
                             <Grid.Item w='100%' key={i} bd={store.settingsStore.data.image.selectedImage == i ? '2px solid white' : ''}>
@@ -152,6 +144,14 @@ export const ImageSettingsSection = observer(() => {
                                 }} />
                             </Grid.Item>
                         )
+                    })
+                }
+                {
+                    Array(store.settingsStore.data.operational.awaitedPrompts.length).fill(0).map((k: number, i: number) => {
+                        return (
+                            <Grid.Item w='100%' key={i}>
+                                <Skeleton w={200} h={200} />
+                            </Grid.Item>)
                     })
                 }
             </Grid>
