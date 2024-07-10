@@ -13,8 +13,6 @@ export const SettingsTab = () => {
 
     const { getColor } = usePrismaneColor();
     const { copy, paste } = useCopySettings();
-    const store = useStore();
-    store.settingsStore.data.operational.readyImages = ['', ''];
 
     return (
         <Main>
