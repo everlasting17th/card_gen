@@ -4,6 +4,7 @@ import { Box, Button, Center, Divider, Text } from "@prismane/core";
 import * as showdown from 'showdown';
 import html2canvas from "html2canvas";
 import { Download } from "@phosphor-icons/react";
+import { backgroundImage } from "html2canvas/dist/types/css/property-descriptors/background-image";
 
 export const CardCanvas = observer(() => {
     const store = useStore();
@@ -11,6 +12,7 @@ export const CardCanvas = observer(() => {
     const px = (x: number) => x.toString() + 'px';
 
     const borderColor = store.settingsStore.data.background.borderColor;
+    const backgroundAccentColor = store.settingsStore.data.background.accentColor;
     const backgroundColor = store.settingsStore.data.background.color;
     const borderWidth = store.settingsStore.data.background.borderWidth;
     const width = store.settingsStore.data.background.width - borderWidth * 2;
@@ -47,7 +49,7 @@ export const CardCanvas = observer(() => {
         <div>
             <div id='canvas-capture' style={{ width: px(store.settingsStore.data.background.width) }}>
                 <Box bg={backgroundColor} w={px(width)} h={px(height)} bd={px(borderWidth) + ' solid ' + borderColor} >
-                    <Center>
+                    <Center style={{ backgroundImage: `radial-gradient(circle, ${backgroundAccentColor} 0%, ${backgroundColor} 60%)` }}>
                         <div style={{ display: 'flex', flexDirection: 'column', maxHeight: px(height - foregroundMargin * 2), marginTop: px(foregroundMargin) }}>
                             {
                                 selectedImage != null

@@ -12,6 +12,7 @@ export class SettingsStore {
             borderWidth: number;
             color: string;
             borderColor: string;
+            accentColor: string;
         },
         foreground: {
             color: string;
@@ -54,7 +55,8 @@ export class SettingsStore {
                 height: 1000,
                 borderWidth: 20,
                 color: '#202121',
-                borderColor: '#000000'
+                borderColor: '#000000',
+                accentColor: '#000000'
             },
             foreground: {
                 color: '#d8d8d7',

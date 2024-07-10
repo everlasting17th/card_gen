@@ -26,6 +26,11 @@ export const BackgroundSettingsSection = observer(() => {
                 onValueChange={(value) => { store.settingsStore.data.background.color = value }}
             />
             <ColorField
+                label='Accent color'
+                value={store.settingsStore.data.background.accentColor}
+                onValueChange={(value) => { store.settingsStore.data.background.accentColor = value }}
+            />
+            <ColorField
                 label='Border'
                 value={store.settingsStore.data.background.borderColor}
                 onValueChange={(value) => store.settingsStore.data.background.borderColor = value}
