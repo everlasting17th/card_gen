@@ -16,46 +16,46 @@ export const ImageSettingsSection = observer(() => {
     const [isApiConfigOpen, setApiConfigOpen] = useState<boolean>(false);
     const [isOpenAiBusy, setIsOpenAiBusy] = useState<boolean>(false);
 
-    const canGeneratePropmpt = (): boolean => store.settingsStore.openAiKey != '' && store.settingsStore.openAiPrompt != '' && !isOpenAiBusy;
-    const canGenerateImage = (): boolean => store.settingsStore.comfyUrl != '' && store.settingsStore.selectedPipeline !== null;
+    const canGeneratePropmpt = (): boolean => store.settingsStore.data.settings.openAi.key != '' && store.settingsStore.data.settings.openAi.prompt != '' && !isOpenAiBusy;
+    const canGenerateImage = (): boolean => store.settingsStore.data.settings.comfy.url != '' && store.settingsStore.data.image.selectedPipeline !== null;
 
     const generateImage = async () => {
-        const positive = store.settingsStore.fullImagePrompt.replace('{0}', store.settingsStore.imagePrompt).trim().replaceAll('\n', ' ');
+        const positive = store.settingsStore.data.settings.comfy.fullPrompt.replace('{0}', store.settingsStore.data.image.prompt).trim().replaceAll('\n', ' ');
 
-        const prompt = store.settingsStore.comfyPipelines[store.settingsStore.selectedPipeline!].pipeline
+        const prompt = store.settingsStore.data.settings.comfy.pipelines[store.settingsStore.data.image.selectedPipeline!].pipeline
             .replaceAll('!positive_prompt!', positive)
-            .replaceAll('!negative_prompt!', store.settingsStore.imageNegativePrompt.trim().replaceAll('\n', ' '))
+            .replaceAll('!negative_prompt!', store.settingsStore.data.settings.comfy.negativePrompt.trim().replaceAll('\n', ' '))
             .replaceAll('!random_seed!', Math.floor(Math.random() * 100000000).toString());
 
-        const response = await comfyApi.prompt(store.settingsStore.comfyUrl, '123', prompt);
+        const response = await comfyApi.prompt(store.settingsStore.data.settings.comfy.url, '123', prompt);
         const result = await response.json();
 
         const promptId: string = result.prompt_id;
 
-        store.settingsStore.awaitedPrompts.push({ promptId: promptId });
+        store.settingsStore.data.operational.awaitedPrompts.push({ promptId: promptId });
     }
 
     const generatePrompt = async () => {
         setIsOpenAiBusy(true);
 
-        const prompt = store.settingsStore.openAiPrompt.replace('{0}', store.settingsStore.contentTitle + '\n' + store.settingsStore.contentBody);
+        const prompt = store.settingsStore.data.settings.openAi.prompt.replace('{0}', store.settingsStore.data.content.title + '\n' + store.settingsStore.data.content.body);
 
-        const response = await openAiCompletion(store.settingsStore.openAiKey, prompt);
+        const response = await openAiCompletion(store.settingsStore.data.settings.openAi.key, prompt);
         const res = await response.json();
 
         const choice = res.choices[0];
 
-        store.settingsStore.imagePrompt = choice.message.content.replace('Tags:', '').trim();
+        store.settingsStore.data.image.prompt = choice.message.content.replace('Tags:', '').trim();
         setIsOpenAiBusy(false);
     }
 
     useInterval(async () => {
-        if (store.settingsStore.awaitedPrompts.length == 0) {
+        if (store.settingsStore.data.operational.awaitedPrompts.length == 0) {
             return;
         }
 
         const res = await Promise.all(
-            store.settingsStore.awaitedPrompts.map(async (prompt) => [await (await comfyApi.getHistory(store.settingsStore.comfyUrl, prompt.promptId)).json(), prompt.promptId])
+            store.settingsStore.data.operational.awaitedPrompts.map(async (prompt) => [await (await comfyApi.getHistory(store.settingsStore.data.settings.comfy.url, prompt.promptId)).json(), prompt.promptId])
         );
 
         const filesToDownload: { filename: string, subfolder: string }[] = [];
@@ -66,7 +66,7 @@ export const ImageSettingsSection = observer(() => {
                 // contains response
                 const responseObj = response[0][promptId];
 
-                store.settingsStore.awaitedPrompts.splice(store.settingsStore.awaitedPrompts.indexOf(promptId), 1);
+                store.settingsStore.data.operational.awaitedPrompts.splice(store.settingsStore.data.operational.awaitedPrompts.indexOf(promptId), 1);
 
                 const outputs = Object.keys(responseObj.outputs);
 
@@ -88,14 +88,14 @@ export const ImageSettingsSection = observer(() => {
 
             // store.settingsStore.downloadingBlobs -= filesToDownload.length;
             filesToDownload.forEach((file) => {
-                store.settingsStore.readyImages.push(`${store.settingsStore.comfyUrl}/view?filename=${file.filename}&type=temp`);
+                store.settingsStore.data.operational.readyImages.push(`${store.settingsStore.data.settings.comfy.url}/view?filename=${file.filename}&type=temp`);
             });
         }
 
     }, 3000);
 
     const addPipeline = () => {
-        store.settingsStore.comfyPipelines.push({
+        store.settingsStore.data.settings.comfy.pipelines.push({
             name: '',
             pipeline: '',
             trigger: ''
@@ -103,7 +103,7 @@ export const ImageSettingsSection = observer(() => {
     }
 
     const removePipeline = (index: number) => {
-        store.settingsStore.comfyPipelines.splice(index, 1);
+        store.settingsStore.data.settings.comfy.pipelines.splice(index, 1);
     }
 
     const { getColor } = usePrismaneColor();
@@ -116,26 +116,26 @@ export const ImageSettingsSection = observer(() => {
             </Flex>
             <TextareEditField
                 label="Image prompt"
-                value={store.settingsStore.imagePrompt}
-                onValueChange={(value) => store.settingsStore.imagePrompt = value}
+                value={store.settingsStore.data.image.prompt}
+                onValueChange={(value) => store.settingsStore.data.image.prompt = value}
                 height={100}
             />
             <Flex mt='15px' mb='15px' w='100%' align='end' gap='10px' direction="row-reverse">
                 <Button color='green' icon={<PaintBrush />} disabled={!canGenerateImage()} onClick={async () => await generateImage()}>Generate Image</Button>
                 <SelectField
-                    value={store.settingsStore.selectedPipeline !== null ? store.settingsStore.comfyPipelines[store.settingsStore.selectedPipeline].name : ''}
+                    value={store.settingsStore.data.image.selectedPipeline !== null ? store.settingsStore.data.settings.comfy.pipelines[store.settingsStore.data.image.selectedPipeline].name : ''}
                     icon={<GearSix />}
                     placeholder="Choose a pipeline"
-                    options={store.settingsStore.comfyPipelines.map((pipeline, i) => { return { element: pipeline.name, value: i.toString() } })}
+                    options={store.settingsStore.data.settings.comfy.pipelines.map((pipeline, i) => { return { element: pipeline.name, value: i.toString() } })}
                     style={{ maxWidth: '320px', height: '40px' }}
                     onChange={(e) => {
-                        store.settingsStore.selectedPipeline = parseInt(e.target.value)
+                        store.settingsStore.data.image.selectedPipeline = parseInt(e.target.value)
                     }}
                 />
             </Flex>
             <Grid templateColumns={3} w='100%' gap='15px'>
                 {
-                    Array(store.settingsStore.downloadingBlobs + store.settingsStore.awaitedPrompts.length).fill(0).map((k: number, i: number) => {
+                    Array(store.settingsStore.data.operational.awaitedPrompts.length).fill(0).map((k: number, i: number) => {
                         return (
                             <Grid.Item w='100%' key={i}>
                                 <Skeleton w={200} h={200} />
@@ -143,12 +143,12 @@ export const ImageSettingsSection = observer(() => {
                     })
                 }
                 {
-                    store.settingsStore.readyImages.map((blob, i) => {
+                    store.settingsStore.data.operational.readyImages.map((url, i) => {
                         return (
-                            <Grid.Item w='100%' key={i} bd={store.settingsStore.selectedImage == i ? '2px solid white' : ''}>
-                                <img style={{ maxWidth: '200px' }} src={blob} onClick={() => {
+                            <Grid.Item w='100%' key={i} bd={store.settingsStore.data.image.selectedImage == i ? '2px solid white' : ''}>
+                                <img style={{ maxWidth: '200px' }} src={url} onClick={() => {
                                     console.log(i);
-                                    store.settingsStore.selectedImage = i;
+                                    store.settingsStore.data.image.selectedImage = i;
                                 }} />
                             </Grid.Item>
                         )
@@ -162,31 +162,31 @@ export const ImageSettingsSection = observer(() => {
                     <TextEditField
                         label='Open AI key'
                         type="text"
-                        value={store.settingsStore.openAiKey}
-                        onValueChange={(value) => store.settingsStore.openAiKey = value}
+                        value={store.settingsStore.data.settings.openAi.key}
+                        onValueChange={(value) => store.settingsStore.data.settings.openAi.key = value}
                     />
                     <TextareEditField
                         label="Open AI prompt"
-                        value={store.settingsStore.openAiPrompt}
-                        onValueChange={(value) => store.settingsStore.openAiPrompt = value}
+                        value={store.settingsStore.data.settings.openAi.prompt}
+                        onValueChange={(value) => store.settingsStore.data.settings.openAi.prompt = value}
                         height={500}
                     />
                     <TextEditField
                         label='Comfy Url'
                         type="text"
-                        value={store.settingsStore.comfyUrl}
-                        onValueChange={(value) => store.settingsStore.comfyUrl = value}
+                        value={store.settingsStore.data.settings.comfy.url}
+                        onValueChange={(value) => store.settingsStore.data.settings.comfy.url = value}
                     />
                     <TextareEditField
                         label="Image prompt"
-                        value={store.settingsStore.fullImagePrompt}
-                        onValueChange={(value) => store.settingsStore.fullImagePrompt = value}
+                        value={store.settingsStore.data.settings.comfy.fullPrompt}
+                        onValueChange={(value) => store.settingsStore.data.settings.comfy.fullPrompt = value}
                         height={150}
                     />
                     <TextareEditField
                         label="Negative prompt"
-                        value={store.settingsStore.imageNegativePrompt}
-                        onValueChange={(value) => store.settingsStore.imageNegativePrompt = value}
+                        value={store.settingsStore.data.settings.comfy.negativePrompt}
+                        onValueChange={(value) => store.settingsStore.data.settings.comfy.negativePrompt = value}
                         height={100}
                     />
                     <Flex style={{ justifyContent: 'space-between', alignItems: 'center' }}>
@@ -194,7 +194,7 @@ export const ImageSettingsSection = observer(() => {
                         <Button icon={<Plus />} onClick={() => addPipeline()}>Add Pipeline</Button>
                     </Flex>
                     {
-                        store.settingsStore.comfyPipelines.length > 0
+                        store.settingsStore.data.settings.comfy.pipelines.length > 0
                             ? (
                                 <Flex style={{ gap: '20px' }}>
                                     <Text w='240px' as='p' cl={getColor('coal', 400)}>Name</Text>
@@ -204,7 +204,7 @@ export const ImageSettingsSection = observer(() => {
                             : (<div />)
                     }
                     {
-                        store.settingsStore.comfyPipelines.map((pipeline, i) => {
+                        store.settingsStore.data.settings.comfy.pipelines.map((pipeline, i) => {
                             return (
                                 <Flex key={i} h='120px'>
                                     <TextEditField

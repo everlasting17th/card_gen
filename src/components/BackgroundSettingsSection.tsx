@@ -1,4 +1,3 @@
-import { SketchPicker } from 'react-color';
 import { ColorField } from './ColorField';
 import { useStore } from '../store/store';
 import { observer } from 'mobx-react-lite';
@@ -12,30 +11,30 @@ export const BackgroundSettingsSection = observer(() => {
             <TextEditField
                 label='Width'
                 type='number'
-                value={store.settingsStore.width.toString()}
-                onValueChange={(value) => { store.settingsStore.width = parseInt(value) }}
+                value={store.settingsStore.data.background.width.toString()}
+                onValueChange={(value) => { store.settingsStore.data.background.width = parseInt(value) }}
             />
             <TextEditField
                 label='Height'
                 type='number'
-                value={store.settingsStore.height.toString()}
-                onValueChange={(value) => { store.settingsStore.height = parseInt(value) }}
+                value={store.settingsStore.data.background.height.toString()}
+                onValueChange={(value) => { store.settingsStore.data.background.height = parseInt(value) }}
             />
             <ColorField
                 label='Color'
-                value={store.settingsStore.backgroundColor}
-                onValueChange={(value) => { store.settingsStore.backgroundColor = value }}
+                value={store.settingsStore.data.background.color}
+                onValueChange={(value) => { store.settingsStore.data.background.color = value }}
             />
             <ColorField
                 label='Border'
-                value={store.settingsStore.borderColor}
-                onValueChange={(value) => store.settingsStore.borderColor = value}
+                value={store.settingsStore.data.background.borderColor}
+                onValueChange={(value) => store.settingsStore.data.background.borderColor = value}
             />
             <TextEditField
                 label='Border Width'
                 type='number'
-                value={store.settingsStore.borderWidth.toString()}
-                onValueChange={(value) => { store.settingsStore.borderWidth = parseInt(value) }}
+                value={store.settingsStore.data.background.borderWidth.toString()}
+                onValueChange={(value) => { store.settingsStore.data.background.borderWidth = parseInt(value) }}
             />
         </div>
     );

@@ -11,14 +11,14 @@ export const ContentSettingsSection = observer(() => {
     const store = useStore();
 
     const formatMd = async () => {
-        const prompt = `You will be given a text description of a skill or ability. Your task is to format this text to the markdown format. You can use any markdown features: bold, italic, list, colors, headers. Do not change original text, do not add anything. Please only respond with formatted text. \n ${store.settingsStore.contentBody}`
+        const prompt = `You will be given a text description of a skill or ability. Your task is to format this text to the markdown format. You can use any markdown features: bold, italic, list, colors, headers. Do not change original text, do not add anything. Please only respond with formatted text, no brackets or eny enclosing. \n ${store.settingsStore.data.content.body}`
 
-        var response = await openAiCompletion(store.settingsStore.openAiKey, prompt);
+        var response = await openAiCompletion(store.settingsStore.data.settings.openAi.key, prompt);
         const res = await response.json();
 
         const choice = res.choices[0];
 
-        store.settingsStore.contentBody = choice.message.content.trim();
+        store.settingsStore.data.content.body = choice.message.content.trim();
     }
 
     return (
@@ -26,18 +26,18 @@ export const ContentSettingsSection = observer(() => {
             <TextEditField
                 label='Title'
                 type='text'
-                value={store.settingsStore.contentTitle}
-                onValueChange={(value) => { store.settingsStore.contentTitle = value }}
+                value={store.settingsStore.data.content.title}
+                onValueChange={(value) => { store.settingsStore.data.content.title = value }}
             />
             <ColorField
                 label='Title color'
-                value={store.settingsStore.contentTitleColor}
-                onValueChange={(value) => { store.settingsStore.contentTitleColor = value }}
+                value={store.settingsStore.data.content.titleColor}
+                onValueChange={(value) => { store.settingsStore.data.content.titleColor = value }}
             />
             <TextareEditField
                 label='Content'
-                value={store.settingsStore.contentBody}
-                onValueChange={(value) => { store.settingsStore.contentBody = value }}
+                value={store.settingsStore.data.content.body}
+                onValueChange={(value) => { store.settingsStore.data.content.body = value }}
                 placeholder='You can use markdown here'
                 height={500}
             />
@@ -47,8 +47,8 @@ export const ContentSettingsSection = observer(() => {
             <TextEditField
                 label='Font size'
                 type='number'
-                value={store.settingsStore.contentFontSize.toString()}
-                onValueChange={(value) => { store.settingsStore.contentFontSize = parseInt(value) }}
+                value={store.settingsStore.data.content.fontSize.toString()}
+                onValueChange={(value) => { store.settingsStore.data.content.fontSize = parseInt(value) }}
             />
         </div>
     )

@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
-import { useEffect, useRef } from "react";
 import { Box, Button, Center, Text } from "@prismane/core";
 import * as showdown from 'showdown';
 import html2canvas from "html2canvas";
@@ -11,49 +10,48 @@ export const CardCanvas = observer(() => {
 
     const px = (x: number) => x.toString() + 'px';
 
-    const borderColor = store.settingsStore.borderColor;
-    const backgroundColor = store.settingsStore.backgroundColor;
-    const borderWidth = store.settingsStore.borderWidth;
-    const width = store.settingsStore.width - borderWidth * 2;
-    const height = store.settingsStore.height - borderWidth * 2;
-    const foregroundColor = store.settingsStore.foregroundColor;
-    const foregroundMargin = store.settingsStore.foregroundMargin;
-    const foregroundBorderWidth = store.settingsStore.foregroundBorderWidth;
-    const foregroundBorderColor = store.settingsStore.foregroundBorderColor;
+    const borderColor = store.settingsStore.data.background.borderColor;
+    const backgroundColor = store.settingsStore.data.background.color;
+    const borderWidth = store.settingsStore.data.background.borderWidth;
+    const width = store.settingsStore.data.background.width - borderWidth * 2;
+    const height = store.settingsStore.data.background.height - borderWidth * 2;
+    const foregroundColor = store.settingsStore.data.foreground.color;
+    const foregroundMargin = store.settingsStore.data.foreground.margin;
+    const foregroundBorderWidth = store.settingsStore.data.foreground.borderWidth;
+    const foregroundBorderColor = store.settingsStore.data.foreground.borderColor;
 
-    const title = store.settingsStore.contentTitle;
-    const titleColor = store.settingsStore.contentTitleColor;
+    const title = store.settingsStore.data.content.title;
+    const titleColor = store.settingsStore.data.content.titleColor;
 
-    const content = store.settingsStore.contentBody;
+    const content = store.settingsStore.data.content.body;
     const converter = new showdown.Converter();
     const contentHtml = converter.makeHtml(content);
 
-    const contentFontSize = store.settingsStore.contentFontSize;
-    const selectedImage = store.settingsStore.selectedImage;
+    const contentFontSize = store.settingsStore.data.content.fontSize;
+    const selectedImage = store.settingsStore.data.image.selectedImage;
 
     const saveAsImage = async () => {
         const canvas = await html2canvas(document.querySelector('#canvas-capture')!, {
             useCORS: true,
             allowTaint: true
         });
-        //document.body.appendChild(canvas);
 
         const link = document.getElementById('link');
-        link!.setAttribute('download', `${store.settingsStore.contentTitle}.png`);
+        link!.setAttribute('download', `${title}.png`);
         link!.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
         link!.click();
     }
 
     return (
         <div>
-            <div id='canvas-capture' style={{ width: px(store.settingsStore.width) }}>
+            <div id='canvas-capture' style={{ width: px(store.settingsStore.data.background.width) }}>
                 <Box bg={backgroundColor} w={px(width)} h={px(height)} bd={px(borderWidth) + ' solid ' + borderColor} >
                     <Center>
                         <div style={{ display: 'flex', flexDirection: 'column', maxHeight: px(height - foregroundMargin * 2), marginTop: px(foregroundMargin) }}>
                             {
                                 selectedImage != null
                                     ? <img
-                                        src={store.settingsStore.readyImages[selectedImage]}
+                                        src={store.settingsStore.data.operational.readyImages[selectedImage]}
                                         width={px(width - foregroundMargin * 2 - foregroundBorderWidth * 2)}
                                         height="400px" style={{ objectFit: 'cover', border: `${px(foregroundBorderWidth)} solid ${foregroundBorderColor}` }} />
                                     : <div />

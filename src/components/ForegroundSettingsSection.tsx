@@ -10,24 +10,24 @@ export const ForegroundSettingsSection = observer(() => {
         <TextEditField
             label='Margin'
             type='number'
-            value={store.settingsStore.foregroundMargin.toString()}
-            onValueChange={(value) => { store.settingsStore.foregroundMargin = parseInt(value) }}
+            value={store.settingsStore.data.foreground.margin.toString()}
+            onValueChange={(value) => { store.settingsStore.data.foreground.margin = parseInt(value) }}
         />
         <ColorField
             label='Color'
-            value={store.settingsStore.foregroundColor}
-            onValueChange={(value) => { store.settingsStore.foregroundColor = value }}
+            value={store.settingsStore.data.foreground.color}
+            onValueChange={(value) => { store.settingsStore.data.foreground.color = value }}
         />
         <TextEditField
             label='Border width'
             type='number'
-            value={store.settingsStore.foregroundBorderWidth.toString()}
-            onValueChange={(value) => { store.settingsStore.foregroundBorderWidth = parseInt(value) }}
+            value={store.settingsStore.data.foreground.borderWidth.toString()}
+            onValueChange={(value) => { store.settingsStore.data.foreground.borderWidth = parseInt(value) }}
         />
         <ColorField
             label='Border Color'
-            value={store.settingsStore.foregroundBorderColor}
-            onValueChange={(value) => { store.settingsStore.foregroundBorderColor = value }}
+            value={store.settingsStore.data.foreground.borderColor}
+            onValueChange={(value) => { store.settingsStore.data.foreground.borderColor = value }}
         />
     </div>)
 });
