@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
-import { Box, Button, Center, Text } from "@prismane/core";
+import { Box, Button, Center, Divider, Text } from "@prismane/core";
 import * as showdown from 'showdown';
 import html2canvas from "html2canvas";
 import { Download } from "@phosphor-icons/react";
@@ -63,11 +63,12 @@ export const CardCanvas = observer(() => {
                                 h={px(height - foregroundMargin * 2 - foregroundBorderWidth * 2)}
                                 mt={px(foregroundMargin)}
                                 bd={px(foregroundBorderWidth) + ' solid ' + foregroundBorderColor}
-                                style={{ backgroundImage: `url("${foregroundImage}")` }}>
+                                style={{ backgroundImage: `linear-gradient(0deg, ${foregroundColor} ,transparent), url("${foregroundImage}")` }}>
 
                                 <Center>
                                     <Text cl={titleColor} as='h2' mt='10px'>{title}</Text>
                                 </Center>
+                                <Divider variant='dotted' />
                                 <div style={{ marginLeft: (15 + contentFontSize).toString() + 'px', marginRight: (15).toString() + 'px', fontSize: contentFontSize.toString() + 'pt' }} dangerouslySetInnerHTML={{ __html: contentHtml }}></div>
                             </Box>
                         </div>
