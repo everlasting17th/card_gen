@@ -5,6 +5,7 @@ import { ForegroundSettingsSection } from "./ForegroundSettingsSection";
 import { ContentSettingsSection } from "./ContentSettingsSection";
 import { ImageSettingsSection } from "./ImageSettingsSection";
 import { useCopySettings } from "../hooks/useCopySettings";
+import { useStore } from "../store/store";
 
 export const SettingsTab = () => {
 
@@ -12,10 +13,12 @@ export const SettingsTab = () => {
 
     const { getColor } = usePrismaneColor();
     const { copy, paste } = useCopySettings();
+    const store = useStore();
+    store.settingsStore.data.operational.readyImages = ['', ''];
 
     return (
         <Main>
-            <Container maxSize="xl">
+            <Container maxSize='xxl'>
                 <Flex style={{ width: '100%' }}>
                     <Text fs='xl' cl='copper' fw='bold'>Card Generator v{pjson.version}</Text>
                     <Flex align="end" gap={2} direction="column" style={{ marginLeft: 'auto' }} w='200px'>

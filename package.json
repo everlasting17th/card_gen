@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@fontsource/inter": "^5.0.18",
+    "@geoffcox/react-splitter": "^2.1.2",
     "@phosphor-icons/react": "^2.1.7",
     "@prismane/core": "^1.6.0",
     "@testing-library/jest-dom": "^5.17.0",

@@ -9,12 +9,16 @@ import { GearSix, OpenAiLogo, PaintBrush, Plus, Trash } from "@phosphor-icons/re
 import { openAiCompletion } from "../api/openai.api";
 import * as comfyApi from '../api/comfy.api'
 import { useInterval } from "usehooks-ts";
+import { useReadyImages } from "../hooks/useReadyImages";
 
 export const ImageSettingsSection = observer(() => {
     const store = useStore();
 
     const [isApiConfigOpen, setApiConfigOpen] = useState<boolean>(false);
     const [isOpenAiBusy, setIsOpenAiBusy] = useState<boolean>(false);
+
+    const { getSelectedImage, setSelectedImage, addImage, removeImage } = useReadyImages();
+
 
     const canGeneratePropmpt = (): boolean => store.settingsStore.data.settings.openAi.key != '' && store.settingsStore.data.settings.openAi.prompt != '' && !isOpenAiBusy;
     const canGenerateImage = (): boolean => store.settingsStore.data.settings.comfy.url != '' && store.settingsStore.data.image.selectedPipeline !== null;
@@ -79,16 +83,8 @@ export const ImageSettingsSection = observer(() => {
         })
 
         if (filesToDownload.length > 0) {
-            // store.settingsStore.downloadingBlobs += filesToDownload.length;
-
-            // const files = await Promise.all(filesToDownload.map(async (file) => await (await comfyApi.downloadImage(store.settingsStore.comfyUrl, file.filename, '', 'temp')).blob()));
-            // files.forEach((file) => {
-            //     store.settingsStore.donwloadedBlobs.push(file);
-            // })
-
-            // store.settingsStore.downloadingBlobs -= filesToDownload.length;
             filesToDownload.forEach((file) => {
-                store.settingsStore.data.operational.readyImages.push(`${store.settingsStore.data.settings.comfy.url}/view?filename=${file.filename}&type=temp`);
+                addImage(`${store.settingsStore.data.settings.comfy.url}/view?filename=${file.filename}&type=temp`)
             });
         }
 
@@ -107,6 +103,7 @@ export const ImageSettingsSection = observer(() => {
     }
 
     const { getColor } = usePrismaneColor();
+
 
     return (
         <div>
@@ -133,28 +130,28 @@ export const ImageSettingsSection = observer(() => {
                     }}
                 />
             </Flex>
-            <Grid templateColumns={3} w='100%' gap='15px'>
+            <Flex gap='15px' wrap="wrap">
                 {
                     store.settingsStore.data.operational.readyImages.map((url, i) => {
                         return (
-                            <Grid.Item w='100%' key={i} bd={store.settingsStore.data.image.selectedImage == i ? '2px solid white' : ''}>
-                                <img style={{ maxWidth: '200px' }} src={url} onClick={() => {
+                            <div key={i} style={{ width: '200px', height: '200px', position: 'relative' }}>
+                                <img style={{ width: '100%', height: '100%', border: store.settingsStore.data.image.selectedImage == i ? '2px solid white' : '' }} src={url} onClick={() => {
                                     console.log(i);
                                     store.settingsStore.data.image.selectedImage = i;
                                 }} />
-                            </Grid.Item>
+                                <Button style={{ position: 'absolute', top: '10px', right: '10px' }} size="xs" bg={getColor('red', 600)} icon={<Trash />} onClick={() => removeImage(i)} />
+                            </div>
                         )
                     })
                 }
                 {
                     Array(store.settingsStore.data.operational.awaitedPrompts.length).fill(0).map((k: number, i: number) => {
                         return (
-                            <Grid.Item w='100%' key={i}>
-                                <Skeleton w={200} h={200} />
-                            </Grid.Item>)
+                            <Skeleton w={200} h={200} key={i} />
+                        )
                     })
                 }
-            </Grid>
+            </Flex>
 
             <Modal style={{ maxHeight: '1200px', overflowY: 'auto', overflowX: 'hidden' }} open={isApiConfigOpen} onClose={() => setApiConfigOpen(false)} closable>
                 <Box w='800px'>

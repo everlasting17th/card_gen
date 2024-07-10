@@ -1,9 +1,10 @@
 import './App.css';
-import { Grid, PRISMANE_COLORS, PrismaneProvider, fr, usePrismaneColor } from '@prismane/core';
+import { Box, Grid, PRISMANE_COLORS, PrismaneProvider, fr, usePrismaneColor } from '@prismane/core';
 import { SettingsTab } from './components/SettingsTab';
 import { StoreContext } from './store/store';
 import { store } from './store/RootStore';
 import { CardCanvas } from './components/CardCanvas';
+import { Split } from '@geoffcox/react-splitter';
 
 function App() {
     const theme = {
@@ -17,18 +18,23 @@ function App() {
 
     const { getColor } = usePrismaneColor();
 
+    const colors = {
+        color: getColor('copper', 900),
+        hover: getColor('copper', 600),
+        drag: getColor('copper', 300)
+    };
 
     return (
         <StoreContext.Provider value={store}>
             <PrismaneProvider theme={theme}>
-                <Grid templateColumns={8} gap={fr(1)} w='100%' h='100%'>
-                    <Grid.Item bg='base' columnStart={1} columnEnd={6}>
+                <Split defaultSplitterColors={colors} minSecondarySize='600px'>
+                    <Box bg='base' >
                         <CardCanvas />
-                    </Grid.Item>
-                    <Grid.Item bg={getColor('sepia', 900)} style={{ overflowY: 'auto' }} columnStart={6} columnEnd={9}>
+                    </Box>
+                    <Box h='100%' bg={getColor('sepia', 900)} style={{ overflowY: 'auto' }}>
                         <SettingsTab />
-                    </Grid.Item>
-                </Grid>
+                    </Box>
+                </Split>
             </PrismaneProvider>
         </StoreContext.Provider>
     );
