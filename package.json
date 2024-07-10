@@ -1,6 +1,6 @@
 {
   "name": "card-generator",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "homepage": "https://everlasting17th.github.io/card_gen",
   "private": true,
   "dependencies": {
