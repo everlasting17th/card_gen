@@ -1,7 +1,7 @@
-import { ColorField } from './ColorField';
+import { ColorField } from './common/ColorField';
 import { useStore } from '../store/store';
 import { observer } from 'mobx-react-lite';
-import { TextEditField } from './TextEditField';
+import { TextEditField } from './common/TextEditField';
 
 export const BackgroundSettingsSection = observer(() => {
     const store = useStore();

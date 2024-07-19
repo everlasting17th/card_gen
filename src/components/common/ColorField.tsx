@@ -2,7 +2,7 @@ import { SketchPicker } from 'react-color';
 import './ColorField.scss'
 import { Box, Text, usePrismaneColor } from "@prismane/core";
 import { useState } from 'react';
-import { useOutsideClick } from '../hooks/useOutsideClick';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
 
 interface IProps {
     label: string;

@@ -7,8 +7,10 @@ export const useReadyImages = () => {
     const setSelectedImage = (index: number | null) => store.settingsStore.data.image.selectedImage = index;
 
     return {
+        getReadyImages: () => store.settingsStore.data.operational.readyImages,
         getSelectedImage: getSelectedImage,
         setSelectedImage: setSelectedImage,
+        isImageSelected: (index: number): boolean => store.settingsStore.data.image.selectedImage == index,
         addImage: (url: string) => {
             store.settingsStore.data.operational.readyImages.push(url)
         },
@@ -24,6 +26,6 @@ export const useReadyImages = () => {
             }
 
             store.settingsStore.data.operational.readyImages.splice(index, 1);
-        }
+        },
     };
 };

@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
-import { TextEditField } from "./TextEditField";
-import { ColorField } from "./ColorField";
-import { TextareEditField } from "./TextareaEditField";
+import { TextEditField } from "./common/TextEditField";
+import { ColorField } from "./common/ColorField";
+import { TextareEditField } from "./common/TextareaEditField";
 import { Flex, Button } from "@prismane/core";
 import { OpenAiLogo } from "@phosphor-icons/react";
 import { openAiCompletion } from "../api/openai.api";

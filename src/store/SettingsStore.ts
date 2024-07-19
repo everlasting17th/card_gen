@@ -2,6 +2,7 @@ import { makeAutoObservable, observable } from "mobx";
 import { RootStore } from "./RootStore";
 import { makePersistable } from "mobx-persist-store";
 import { ComfyPipeline } from "../model/ComfyPipeline";
+import { ComfyPreset } from "@/model/ComfyPreset";
 
 export class SettingsStore {
 
@@ -43,6 +44,7 @@ export class SettingsStore {
                 fullPrompt: string;
                 negativePrompt: string;
                 pipelines: ComfyPipeline[],
+                presets: ComfyPreset[],
             }
         },
         operational: {
@@ -86,7 +88,8 @@ export class SettingsStore {
                     url: '',
                     fullPrompt: '',
                     negativePrompt: '',
-                    pipelines: []
+                    pipelines: [],
+                    presets: []
                 }
             },
             operational: {

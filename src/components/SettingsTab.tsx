@@ -1,11 +1,10 @@
 import { Main, Text, Container, Divider, Center, Flex, Button, usePrismaneColor, Toaster } from "@prismane/core";
-import { Section } from "./Section";
+import { Section } from "./common/Section";
 import { BackgroundSettingsSection } from "./BackgroundSettingsSection";
 import { ForegroundSettingsSection } from "./ForegroundSettingsSection";
 import { ContentSettingsSection } from "./ContentSettingsSection";
-import { ImageSettingsSection } from "./ImageSettingsSection";
+import { ImageSettingsSection } from "./image/ImageSettingsSection";
 import { useCopySettings } from "../hooks/useCopySettings";
-import { useStore } from "../store/store";
 
 export const SettingsTab = () => {
 

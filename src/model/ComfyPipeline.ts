@@ -1,5 +1,5 @@
 export interface ComfyPipeline {
+    id: string;
     name: string;
-    trigger: string;
     pipeline: string;
 }
