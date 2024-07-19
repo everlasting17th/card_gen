@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite";
 import { TextareEditField } from "../common/TextareaEditField";
 import { useStore } from "../../store/store";
-import { Box, Button, Flex, Modal, Grid, Text, Spinner, Skeleton, TextField, usePrismaneColor, ActionButton, SelectField, TextareaField } from "@prismane/core";
+import { Box, Button, Flex, Modal, Grid, Text, Spinner, Skeleton, TextField, usePrismaneColor, ActionButton, SelectField, TextareaField, Accordion } from "@prismane/core";
 import { Pen } from "@phosphor-icons/react/dist/ssr";
-import { useState } from "react";
+import { createRef, useState } from "react";
 import { TextEditField } from "../common/TextEditField";
-import { GearSix, OpenAiLogo, PaintBrush, Plus, Trash } from "@phosphor-icons/react";
+import { ArrowArcLeft, Eraser, GearSix, OpenAiLogo, PaintBrush, Plus, Trash } from "@phosphor-icons/react";
 import { openAiCompletion } from "../../api/openai.api";
 import * as comfyApi from '../../api/comfy.api'
 import { useInterval } from "usehooks-ts";
@@ -14,6 +14,10 @@ import { ImageItem } from "./ImageItem";
 import { ImageThumbnail } from "./ImageThumbnail";
 import { ImagesGrid } from "./ImagesGrid";
 import { ImageSettingsModal } from "./ImageSettingsModal";
+import { usePresets } from "@/hooks/usePresets";
+import { usePrompts } from "@/hooks/usePrompts";
+import CanvasDraw from "react-canvas-draw"
+import { ColorField } from "../common/ColorField";
 
 export const ImageSettingsSection = observer(() => {
     const store = useStore();
@@ -22,20 +26,35 @@ export const ImageSettingsSection = observer(() => {
     const [isOpenAiBusy, setIsOpenAiBusy] = useState<boolean>(false);
 
     const { getSelectedImage, setSelectedImage, addImage, removeImage, isImageSelected } = useReadyImages();
-
+    const { getPresets, getSelectedPreset, setSelectedPreset, renderPreset } = usePresets();
+    const { getPositivePrompt, getNegativePrompt } = usePrompts();
 
     const canGeneratePropmpt = (): boolean => store.settingsStore.data.settings.openAi.key != '' && store.settingsStore.data.settings.openAi.prompt != '' && !isOpenAiBusy;
-    const canGenerateImage = (): boolean => store.settingsStore.data.settings.comfy.url != '' && store.settingsStore.data.image.selectedPipeline !== null;
+    const canGenerateImage = (): boolean => store.settingsStore.data.settings.comfy.url != '' && store.settingsStore.data.image.selectedPresetId !== null;
 
     const generateImage = async () => {
-        const positive = store.settingsStore.data.settings.comfy.fullPrompt.replace('{0}', store.settingsStore.data.image.prompt).trim().replaceAll('\n', ' ');
+        const preset = getSelectedPreset();
 
-        const prompt = store.settingsStore.data.settings.comfy.pipelines[store.settingsStore.data.image.selectedPipeline!].pipeline
-            .replaceAll('!positive_prompt!', positive)
-            .replaceAll('!negative_prompt!', store.settingsStore.data.settings.comfy.negativePrompt.trim().replaceAll('\n', ' '))
-            .replaceAll('!random_seed!', Math.floor(Math.random() * 100000000).toString());
+        const pipeline = renderPreset(
+            preset!,
+            {
+                positive: getPositivePrompt(),
+                negative: getNegativePrompt()
+            },
+            preset?.controlNetEnabled
+                ? {
+                    base64: (controlNetCanvas?.current as any)?.getDataURL('image/png', false, '#FFFFFF').replace('data:image/png;base64,', '') + '==',
+                    strength: store.settingsStore.data.image.controlNet.strength
+                }
+                : undefined
+        );
 
-        const response = await comfyApi.prompt(store.settingsStore.data.settings.comfy.url, '123', prompt);
+
+        if (!pipeline) {
+            return
+        }
+
+        const response = await comfyApi.prompt(store.settingsStore.data.settings.comfy.url, '123', pipeline);
         const result = await response.json();
 
         const promptId: string = result.prompt_id;
@@ -100,6 +119,8 @@ export const ImageSettingsSection = observer(() => {
 
     const { getColor } = usePrismaneColor();
 
+    const controlNetCanvas = createRef<CanvasDraw>();
+
 
     return (
         <div>
@@ -116,21 +137,67 @@ export const ImageSettingsSection = observer(() => {
             <Flex mt='15px' mb='15px' w='100%' align='end' gap='10px' direction="row-reverse">
                 <Button color='green' icon={<PaintBrush />} disabled={!canGenerateImage()} onClick={async () => await generateImage()}>Generate Image</Button>
                 <SelectField
-                    value={store.settingsStore.data.image.selectedPipeline !== null ? store.settingsStore.data.settings.comfy.pipelines[store.settingsStore.data.image.selectedPipeline].name : ''}
+                    value={getSelectedPreset()?.name}
                     icon={<GearSix />}
-                    placeholder="Choose a pipeline"
-                    options={store.settingsStore.data.settings.comfy.pipelines.map((pipeline, i) => { return { element: pipeline.name, value: i.toString() } })}
+                    placeholder="Choose a preset"
+                    options={getPresets().map((preset) => { return { element: preset.name, value: preset.id } })}
                     style={{ maxWidth: '320px', height: '40px' }}
                     onChange={(e) => {
-                        store.settingsStore.data.image.selectedPipeline = parseInt(e.target.value)
+                        setSelectedPreset(e.target.value)
                     }}
                 />
             </Flex>
-            <ImagesGrid />
+            <Accordion>
+                <Accordion.Item value='controlnet'>
+                    <Accordion.Control>Control Net <Accordion.Icon /></Accordion.Control>
+                    <Accordion.Panel>
+                        <Flex w='100%' justify="end" gap='10px'>
+                            <Box style={{ flexGrow: 1 }} miw='100px'>
+                                <TextEditField
+                                    label="Strength"
+                                    type="number"
+                                    value={store.settingsStore.data.image.controlNet.strength.toString()}
+                                    onValueChange={(value) => store.settingsStore.data.image.controlNet.strength = parseFloat(value)}
+                                />
+                                <ColorField
+                                    label='Brush color'
+                                    value={store.settingsStore.data.image.controlNet.brushColor}
+                                    onValueChange={(value) => store.settingsStore.data.image.controlNet.brushColor = value}
+                                />
+                                <TextEditField
+                                    label='Brush radius'
+                                    type='number'
+                                    value={store.settingsStore.data.image.controlNet.brushRadius.toString()}
+                                    onValueChange={(value) => store.settingsStore.data.image.controlNet.brushRadius = parseFloat(value)}
+                                />
+                                <Flex w='100%' gap='10px'>
+                                    <Button color='base' icon={<ArrowArcLeft />} onClick={() => controlNetCanvas.current?.undo()}>Undo</Button>
+                                    <Button color='base' icon={<Eraser />} onClick={() => controlNetCanvas.current?.clear()}>Clear</Button>
+                                </Flex>
+                            </Box>
+                            <CanvasDraw
+                                ref={controlNetCanvas}
+                                brushColor={store.settingsStore.data.image.controlNet.brushColor}
+                                brushRadius={store.settingsStore.data.image.controlNet.brushRadius}
+                                hideGrid={true}
+                                canvasHeight={512}
+                                canvasWidth={512}
+                            />
+                        </Flex>
+
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item value='imagegrid'>
+                    <Accordion.Control>Images <Accordion.Icon /></Accordion.Control>
+                    <Accordion.Panel>
+                        <ImagesGrid />
+                    </Accordion.Panel>
+                </Accordion.Item>
+            </Accordion >
             <ImageSettingsModal
                 open={isApiConfigOpen}
                 onClose={() => setApiConfigOpen(false)}
             />
-        </div>
+        </div >
     )
 })

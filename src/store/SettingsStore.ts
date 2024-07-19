@@ -32,6 +32,12 @@ export class SettingsStore {
             selectedPipeline: number | null;
             prompt: string
             selectedImage: number | null;
+            selectedPresetId: string | null;
+            controlNet: {
+                strength: number;
+                brushColor: string;
+                brushRadius: number;
+            }
         },
         settings: {
             openAi: {
@@ -76,7 +82,13 @@ export class SettingsStore {
             image: {
                 prompt: '',
                 selectedImage: null,
-                selectedPipeline: null
+                selectedPipeline: null,
+                selectedPresetId: null,
+                controlNet: {
+                    strength: 0,
+                    brushColor: '#000000',
+                    brushRadius: 8
+                }
             },
             settings: {
                 openAi: {

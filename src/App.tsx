@@ -27,7 +27,7 @@ function App() {
     return (
         <StoreContext.Provider value={store}>
             <PrismaneProvider theme={theme}>
-                <Split defaultSplitterColors={colors} minSecondarySize='600px'>
+                <Split defaultSplitterColors={colors} minSecondarySize='900px'>
                     <Box bg='base' >
                         <CardCanvas />
                     </Box>

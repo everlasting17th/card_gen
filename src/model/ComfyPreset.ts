@@ -1,5 +1,7 @@
 export interface ComfyPreset {
-    pipelineId: string;
+    id: string;
+    name: string;
+    pipelineId?: string;
     controlNetEnabled: boolean;
-    loras: { [name: string]: { enabled: boolean, value: number } }
+    loras: { [id: string]: { name: string; enabled: boolean, value: number } }
 }

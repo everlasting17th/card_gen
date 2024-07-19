@@ -22,6 +22,7 @@ export const PipelinesTab = observer(() => {
                         <li>All negative prompt occurences should be replaced with '{bracket('negative_prompt')}'</li>
                         <li>Use <b>PowerLoraLoader</b> node from <a target="_blank" href="https://github.com/rgthree/rgthree-comfy">rgthree</a> to load your loras. You can put many Loras there and tweak them in Presets tab</li>
                         <li>Use <b>LoadImage (Base64)</b> node from <a target="_blank" href="https://github.com/Acly/comfyui-tooling-nodes">comfyui-tooling-nodes</a> for your ControlNet image. Replace base64 text with '{bracket('controlnet_base64')}'</li>
+                        <li>Replace control net strength with '{bracket('controlnet_strength')}'</li>
                         <li>See example Pipelines here</li>
                     </ul>
                 </Alert.Description>
