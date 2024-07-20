@@ -1,4 +1,5 @@
 import { TextEditField } from "@/components/common/TextEditField";
+import { TextFieldCompact } from "@/components/common/TextFieldCompact";
 import { usePipelines } from "@/hooks/usePipelines";
 import { usePresets } from "@/hooks/usePresets";
 import { createUniqueId } from "@/utils/idUtils";
@@ -107,13 +108,13 @@ export const PresetsTab = observer(() => {
                                                         Object.keys(selectedPreset.loras).map((loraId, i) => {
                                                             return (
                                                                 <Flex style={{ alignItems: 'center' }} key={i}>
-                                                                    <TextField
-                                                                        h='25px'
-                                                                        size='xs'
-                                                                        w='100px'
-                                                                        type="number"
-                                                                        value={selectedPreset.loras[loraId].value}
-                                                                        onChange={(e) => selectedPreset.loras[loraId].value = parseFloat(e.target.value)}
+                                                                    <TextFieldCompact
+                                                                        type='number'
+                                                                        value={selectedPreset.loras[loraId].value.toString()}
+                                                                        onValueChange={(value) => selectedPreset.loras[loraId].value = parseFloat(value)}
+                                                                        step={0.1}
+                                                                        min={0}
+                                                                        max={1}
                                                                     />
                                                                     <Checkbox
                                                                         size='xs'

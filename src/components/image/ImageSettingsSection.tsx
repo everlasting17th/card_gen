@@ -171,6 +171,9 @@ export const ImageSettingsSection = observer(() => {
                                             <TextEditField
                                                 label="Strength"
                                                 type="number"
+                                                step={0.1}
+                                                min={0}
+                                                max={1}
                                                 value={store.settingsStore.data.image.controlNet.strength.toString()}
                                                 onValueChange={(value) => store.settingsStore.data.image.controlNet.strength = parseFloat(value)}
                                             />
