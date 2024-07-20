@@ -37,6 +37,7 @@ export class SettingsStore {
                 strength: number;
                 brushColor: string;
                 brushRadius: number;
+                imageSrc: string
             }
         },
         settings: {
@@ -87,7 +88,8 @@ export class SettingsStore {
                 controlNet: {
                     strength: 0,
                     brushColor: '#000000',
-                    brushRadius: 8
+                    brushRadius: 8,
+                    imageSrc: ''
                 }
             },
             settings: {

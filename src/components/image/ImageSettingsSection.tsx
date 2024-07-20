@@ -18,6 +18,8 @@ import { usePresets } from "@/hooks/usePresets";
 import { usePrompts } from "@/hooks/usePrompts";
 import CanvasDraw from "react-canvas-draw"
 import { ColorField } from "../common/ColorField";
+import html2canvas from "html2canvas";
+import { delay } from "@/utils/delay";
 
 export const ImageSettingsSection = observer(() => {
     const store = useStore();
@@ -32,8 +34,19 @@ export const ImageSettingsSection = observer(() => {
     const canGeneratePropmpt = (): boolean => store.settingsStore.data.settings.openAi.key != '' && store.settingsStore.data.settings.openAi.prompt != '' && !isOpenAiBusy;
     const canGenerateImage = (): boolean => store.settingsStore.data.settings.comfy.url != '' && store.settingsStore.data.image.selectedPresetId !== null;
 
+    const [foregroundImgSrc, setForgroundImgSrc] = useState<string>('');
+
     const generateImage = async () => {
         const preset = getSelectedPreset();
+
+        const foregroundImageUrl = (controlNetCanvas?.current as any)?.getDataURL('image/png', true, '#FFFFFF');
+        setForgroundImgSrc(foregroundImageUrl);
+
+        await delay(100);
+
+        const canvas = html2canvas(document.getElementById('canvasOperationRoot')!, { useCORS: true, allowTaint: true });
+        const imageData = (await canvas).toDataURL('image/png');
+        console.log(imageData);
 
         const pipeline = renderPreset(
             preset!,
@@ -43,12 +56,11 @@ export const ImageSettingsSection = observer(() => {
             },
             preset?.controlNetEnabled
                 ? {
-                    base64: (controlNetCanvas?.current as any)?.getDataURL('image/png', false, '#FFFFFF').replace('data:image/png;base64,', '') + '==',
+                    base64: imageData.replace('data:image/png;base64,', '') + '==',
                     strength: store.settingsStore.data.image.controlNet.strength
                 }
                 : undefined
         );
-
 
         if (!pipeline) {
             return
@@ -120,7 +132,7 @@ export const ImageSettingsSection = observer(() => {
     const { getColor } = usePrismaneColor();
 
     const controlNetCanvas = createRef<CanvasDraw>();
-
+    const canvasOperationRoot = createRef<HTMLDivElement>();
 
     return (
         <div>
@@ -148,45 +160,65 @@ export const ImageSettingsSection = observer(() => {
                 />
             </Flex>
             <Accordion>
-                <Accordion.Item value='controlnet'>
-                    <Accordion.Control>Control Net <Accordion.Icon /></Accordion.Control>
-                    <Accordion.Panel>
-                        <Flex w='100%' justify="end" gap='10px'>
-                            <Box style={{ flexGrow: 1 }} miw='100px'>
-                                <TextEditField
-                                    label="Strength"
-                                    type="number"
-                                    value={store.settingsStore.data.image.controlNet.strength.toString()}
-                                    onValueChange={(value) => store.settingsStore.data.image.controlNet.strength = parseFloat(value)}
-                                />
-                                <ColorField
-                                    label='Brush color'
-                                    value={store.settingsStore.data.image.controlNet.brushColor}
-                                    onValueChange={(value) => store.settingsStore.data.image.controlNet.brushColor = value}
-                                />
-                                <TextEditField
-                                    label='Brush radius'
-                                    type='number'
-                                    value={store.settingsStore.data.image.controlNet.brushRadius.toString()}
-                                    onValueChange={(value) => store.settingsStore.data.image.controlNet.brushRadius = parseFloat(value)}
-                                />
-                                <Flex w='100%' gap='10px'>
-                                    <Button color='base' icon={<ArrowArcLeft />} onClick={() => controlNetCanvas.current?.undo()}>Undo</Button>
-                                    <Button color='base' icon={<Eraser />} onClick={() => controlNetCanvas.current?.clear()}>Clear</Button>
-                                </Flex>
-                            </Box>
-                            <CanvasDraw
-                                ref={controlNetCanvas}
-                                brushColor={store.settingsStore.data.image.controlNet.brushColor}
-                                brushRadius={store.settingsStore.data.image.controlNet.brushRadius}
-                                hideGrid={true}
-                                canvasHeight={512}
-                                canvasWidth={512}
-                            />
-                        </Flex>
+                {
+                    getSelectedPreset()?.controlNetEnabled
+                        ? (
+                            <Accordion.Item bg={getColor('coal', 800)} value='controlnet'>
+                                <Accordion.Control>Control Net <Accordion.Icon /></Accordion.Control>
+                                <Accordion.Panel>
+                                    <Flex w='100%' justify="end" gap='10px'>
+                                        <Box style={{ flexGrow: 1 }} miw='100px'>
+                                            <TextEditField
+                                                label="Strength"
+                                                type="number"
+                                                value={store.settingsStore.data.image.controlNet.strength.toString()}
+                                                onValueChange={(value) => store.settingsStore.data.image.controlNet.strength = parseFloat(value)}
+                                            />
+                                            <ColorField
+                                                label='Brush color'
+                                                value={store.settingsStore.data.image.controlNet.brushColor}
+                                                onValueChange={(value) => store.settingsStore.data.image.controlNet.brushColor = value}
+                                            />
+                                            <TextEditField
+                                                label='Brush radius'
+                                                type='number'
+                                                value={store.settingsStore.data.image.controlNet.brushRadius.toString()}
+                                                onValueChange={(value) => store.settingsStore.data.image.controlNet.brushRadius = parseFloat(value)}
+                                            />
+                                            <TextEditField
+                                                label='Image src'
+                                                type='text'
+                                                value={store.settingsStore.data.image.controlNet.imageSrc}
+                                                onValueChange={(value) => store.settingsStore.data.image.controlNet.imageSrc = value}
+                                            />
+                                            <Flex w='100%' gap='10px'>
+                                                <Button color='base' icon={<ArrowArcLeft />} onClick={() => controlNetCanvas.current?.undo()}>Undo</Button>
+                                                <Button color='base' icon={<Eraser />} onClick={() => controlNetCanvas.current?.clear()}>Clear</Button>
+                                            </Flex>
+                                        </Box>
+                                        <CanvasDraw
+                                            ref={controlNetCanvas}
+                                            brushColor={store.settingsStore.data.image.controlNet.brushColor}
+                                            brushRadius={store.settingsStore.data.image.controlNet.brushRadius}
+                                            hideGrid={true}
+                                            canvasHeight={512}
+                                            canvasWidth={512}
+                                            imgSrc={store.settingsStore.data.image.controlNet.imageSrc}
+                                        />
+                                    </Flex>
+                                    <div style={{ position: 'absolute', top: -512, left: -512 }}>
+                                        <div style={{ position: 'relative' }} id='canvasOperationRoot'>
+                                            <img src={store.settingsStore.data.image.controlNet.imageSrc} height={512} width={512}></img>
+                                            <img style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }} src={foregroundImgSrc} height={512} width={512}></img>
+                                        </div>
+                                    </div>
+                                </Accordion.Panel>
+                            </Accordion.Item>
 
-                    </Accordion.Panel>
-                </Accordion.Item>
+                        )
+                        : (<div />)
+                }
+
                 <Accordion.Item value='imagegrid'>
                     <Accordion.Control>Images <Accordion.Icon /></Accordion.Control>
                     <Accordion.Panel>
