@@ -50,7 +50,7 @@ export const ImageSettingsSection = observer(() => {
             const canvas = html2canvas(document.getElementById('canvasOperationRoot')!, { useCORS: true, allowTaint: true });
             imageData = (await canvas).toDataURL('image/png');
         } else {
-            imageData = (controlNetCanvas?.current as any)?.getDataURL('image/png', true, '#FFFFFF');
+            imageData = (controlNetCanvas?.current as any)?.getDataURL('image/png', false, '#FFFFFF');
         }
 
         const pipeline = renderPreset(
