@@ -39,14 +39,19 @@ export const ImageSettingsSection = observer(() => {
     const generateImage = async () => {
         const preset = getSelectedPreset();
 
-        const foregroundImageUrl = (controlNetCanvas?.current as any)?.getDataURL('image/png', true, '#FFFFFF');
-        setForgroundImgSrc(foregroundImageUrl);
+        let imageData = '';
 
-        await delay(100);
+        if (store.settingsStore.data.image.controlNet.imageSrc != '') {
+            const foregroundImageUrl = (controlNetCanvas?.current as any)?.getDataURL('image/png', true, '#FFFFFF');
+            setForgroundImgSrc(foregroundImageUrl);
 
-        const canvas = html2canvas(document.getElementById('canvasOperationRoot')!, { useCORS: true, allowTaint: true });
-        const imageData = (await canvas).toDataURL('image/png');
-        console.log(imageData);
+            await delay(100);
+
+            const canvas = html2canvas(document.getElementById('canvasOperationRoot')!, { useCORS: true, allowTaint: true });
+            imageData = (await canvas).toDataURL('image/png');
+        } else {
+            imageData = (controlNetCanvas?.current as any)?.getDataURL('image/png', true, '#FFFFFF');
+        }
 
         const pipeline = renderPreset(
             preset!,
