@@ -4,6 +4,7 @@ import { Plus } from "@phosphor-icons/react/dist/ssr";
 import { Alert, Button } from "@prismane/core";
 import { observer } from "mobx-react-lite";
 import { PipelineItem } from "./PipelineItem";
+import React from "react";
 
 export const PipelinesTab = observer(() => {
 

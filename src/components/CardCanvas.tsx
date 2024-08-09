@@ -5,6 +5,8 @@ import * as showdown from 'showdown';
 import html2canvas from "html2canvas";
 import { Download } from "@phosphor-icons/react";
 import { backgroundImage } from "html2canvas/dist/types/css/property-descriptors/background-image";
+import React, { createRef, useEffect } from "react";
+import './CardCanvas.scss';
 
 export const CardCanvas = observer(() => {
     const store = useStore();
@@ -28,6 +30,7 @@ export const CardCanvas = observer(() => {
 
     const content = store.settingsStore.data.content.body;
     const converter = new showdown.Converter();
+    converter.setOption('tables', true);
     const contentHtml = converter.makeHtml(content);
 
     const contentFontSize = store.settingsStore.data.content.fontSize;
@@ -44,6 +47,15 @@ export const CardCanvas = observer(() => {
         link!.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
         link!.click();
     }
+
+    const canvasCapture = createRef<HTMLDivElement>();
+
+    useEffect(() => {
+        canvasCapture.current!.style.cssText = `
+            --table-header-color: ${store.settingsStore.data.content.tableHeaderColor};
+            --table-header-text-color: ${store.settingsStore.data.content.tableHeaderTextColor}
+        `;
+    }, [store.settingsStore.data.content.tableHeaderColor, store.settingsStore.data.content.tableHeaderTextColor]);
 
     return (
         <div>
@@ -63,7 +75,7 @@ export const CardCanvas = observer(() => {
                                 bg={foregroundColor}
                                 w={px(width - foregroundMargin * 2 - foregroundBorderWidth * 2)}
                                 h={px(height - foregroundMargin * 2 - foregroundBorderWidth * 2)}
-                                mt={px(foregroundMargin)}
+                                mt={selectedImage != null ? px(foregroundMargin) : 0}
                                 bd={px(foregroundBorderWidth) + ' solid ' + foregroundBorderColor}
                                 style={{ backgroundImage: `linear-gradient(0deg, ${foregroundColor} ,transparent), url("${foregroundImage}")` }}>
 
@@ -71,7 +83,11 @@ export const CardCanvas = observer(() => {
                                     <Text cl={titleColor} as='h2' mt='10px'>{title}</Text>
                                 </Center>
                                 <Divider variant='dotted' />
-                                <div style={{ marginLeft: (15 + contentFontSize).toString() + 'px', marginRight: (15).toString() + 'px', fontSize: contentFontSize.toString() + 'pt' }} dangerouslySetInnerHTML={{ __html: contentHtml }}></div>
+                                <div className="canvas-capture__content" style={{ marginLeft: (15 + contentFontSize).toString() + 'px', marginRight: (15).toString() + 'px', fontSize: contentFontSize.toString() + 'pt' }} >
+                                    <div ref={canvasCapture} dangerouslySetInnerHTML={{ __html: contentHtml }}>
+
+                                    </div>
+                                </div>
                             </Box>
                         </div>
                     </Center>

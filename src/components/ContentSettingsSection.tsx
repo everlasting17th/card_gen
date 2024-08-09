@@ -6,6 +6,7 @@ import { TextareEditField } from "./common/TextareaEditField";
 import { Flex, Button } from "@prismane/core";
 import { OpenAiLogo } from "@phosphor-icons/react";
 import { openAiCompletion } from "../api/openai.api";
+import React from "react";
 
 export const ContentSettingsSection = observer(() => {
     const store = useStore();
@@ -33,6 +34,16 @@ export const ContentSettingsSection = observer(() => {
                 label='Title color'
                 value={store.settingsStore.data.content.titleColor}
                 onValueChange={(value) => { store.settingsStore.data.content.titleColor = value }}
+            />
+            <ColorField
+                label='Table header'
+                value={store.settingsStore.data.content.tableHeaderColor}
+                onValueChange={(value) => { store.settingsStore.data.content.tableHeaderColor = value }}
+            />
+            <ColorField
+                label='Table text'
+                value={store.settingsStore.data.content.tableHeaderTextColor}
+                onValueChange={(value) => { store.settingsStore.data.content.tableHeaderTextColor = value }}
             />
             <TextareEditField
                 label='Content'

@@ -1,0 +1,28 @@
+.canvas-capture {
+    &__content {
+        table {
+            width: 100%;
+        }
+
+        --table-header-color: white;
+        --table-header-text-color: black;
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: center !important;
+            background-color: var(--table-header-color);
+            color: var(--table-header-text-color);
+        }
+
+        th,
+        td {
+            padding: 2px;
+        }
+    }
+}

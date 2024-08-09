@@ -25,6 +25,8 @@ export class SettingsStore {
         content: {
             title: string;
             titleColor: string;
+            tableHeaderColor: string;
+            tableHeaderTextColor: string;
             body: string;
             fontSize: number;
         },
@@ -77,6 +79,8 @@ export class SettingsStore {
             content: {
                 title: '',
                 titleColor: '#de2525',
+                tableHeaderColor: '#FFFFFF',
+                tableHeaderTextColor: '#000000',
                 body: '',
                 fontSize: 16
             },

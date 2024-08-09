@@ -20,6 +20,7 @@ import CanvasDraw from "react-canvas-draw"
 import { ColorField } from "../common/ColorField";
 import html2canvas from "html2canvas";
 import { delay } from "@/utils/delay";
+import React from "react";
 
 export const ImageSettingsSection = observer(() => {
     const store = useStore();
