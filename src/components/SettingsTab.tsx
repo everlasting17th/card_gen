@@ -5,6 +5,7 @@ import { ForegroundSettingsSection } from "./ForegroundSettingsSection";
 import { ContentSettingsSection } from "./ContentSettingsSection";
 import { ImageSettingsSection } from "./image/ImageSettingsSection";
 import { useCopySettings } from "../hooks/useCopySettings";
+import React from "react";
 
 export const SettingsTab = () => {
 
@@ -14,7 +15,7 @@ export const SettingsTab = () => {
     const { copy, paste } = useCopySettings();
 
     return (
-        <Main>
+        <Main style={{ position: 'relative' }}>
             <Container maxSize='xxl'>
                 <Flex style={{ width: '100%' }}>
                     <Text fs='xl' cl='copper' fw='bold'>Card Generator v{pjson.version}</Text>

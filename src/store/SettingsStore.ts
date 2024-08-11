@@ -31,6 +31,9 @@ export class SettingsStore {
             fontSize: number;
         },
         image: {
+            useComfyUi: boolean;
+            directImageUrl: string;
+            directImageBackground: string;
             selectedPipeline: number | null;
             prompt: string
             selectedImage: number | null;
@@ -85,6 +88,9 @@ export class SettingsStore {
                 fontSize: 16
             },
             image: {
+                useComfyUi: true,
+                directImageUrl: '',
+                directImageBackground: '#000000',
                 prompt: '',
                 selectedImage: null,
                 selectedPipeline: null,

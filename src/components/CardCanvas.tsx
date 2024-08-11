@@ -50,6 +50,10 @@ export const CardCanvas = observer(() => {
 
     const canvasCapture = createRef<HTMLDivElement>();
 
+    const useComfyUi = store.settingsStore.data.image.useComfyUi;
+    const directImageUrl = store.settingsStore.data.image.directImageUrl;
+    const directImageBackgroundColor = store.settingsStore.data.image.directImageBackground;
+
     useEffect(() => {
         canvasCapture.current!.style.cssText = `
             --table-header-color: ${store.settingsStore.data.content.tableHeaderColor};
@@ -64,18 +68,19 @@ export const CardCanvas = observer(() => {
                     <Center style={{ backgroundImage: `radial-gradient(circle, ${backgroundAccentColor} 0%, ${backgroundColor} 60%)` }}>
                         <div style={{ display: 'flex', flexDirection: 'column', maxHeight: px(height - foregroundMargin * 2), marginTop: px(foregroundMargin) }}>
                             {
-                                selectedImage != null
+                                (selectedImage != null || !useComfyUi)
                                     ? <img
-                                        src={store.settingsStore.data.operational.readyImages[selectedImage]}
+                                        src={useComfyUi ? store.settingsStore.data.operational.readyImages[selectedImage!] : directImageUrl}
                                         width={px(width - foregroundMargin * 2 - foregroundBorderWidth * 2)}
-                                        height="400px" style={{ objectFit: 'cover', border: `${px(foregroundBorderWidth)} solid ${foregroundBorderColor}` }} />
+                                        height="400px"
+                                        style={{ objectFit: 'cover', border: `${px(foregroundBorderWidth)} solid ${foregroundBorderColor}`, backgroundColor: directImageBackgroundColor }} />
                                     : <div />
                             }
                             <Box
                                 bg={foregroundColor}
                                 w={px(width - foregroundMargin * 2 - foregroundBorderWidth * 2)}
                                 h={px(height - foregroundMargin * 2 - foregroundBorderWidth * 2)}
-                                mt={selectedImage != null ? px(foregroundMargin) : 0}
+                                mt={(selectedImage != null || !useComfyUi) ? px(foregroundMargin) : 0}
                                 bd={px(foregroundBorderWidth) + ' solid ' + foregroundBorderColor}
                                 style={{ backgroundImage: `linear-gradient(0deg, ${foregroundColor} ,transparent), url("${foregroundImage}")` }}>
 
