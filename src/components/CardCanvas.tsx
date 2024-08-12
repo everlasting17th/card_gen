@@ -25,6 +25,7 @@ export const CardCanvas = observer(() => {
     const foregroundBorderColor = store.settingsStore.data.foreground.borderColor;
     const foregroundImage = store.settingsStore.data.foreground.imageUrl;
 
+    const name = store.settingsStore.data.content.name;
     const title = store.settingsStore.data.content.title;
     const titleColor = store.settingsStore.data.content.titleColor;
 
@@ -43,7 +44,7 @@ export const CardCanvas = observer(() => {
         });
 
         const link = document.getElementById('link');
-        link!.setAttribute('download', `${title}.png`);
+        link!.setAttribute('download', `${name}.png`);
         link!.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
         link!.click();
     }

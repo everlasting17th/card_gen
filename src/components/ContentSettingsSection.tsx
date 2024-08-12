@@ -6,7 +6,7 @@ import { TextareEditField } from "./common/TextareaEditField";
 import { Flex, Button } from "@prismane/core";
 import { OpenAiLogo } from "@phosphor-icons/react";
 import { openAiCompletion } from "../api/openai.api";
-import React from "react";
+import React, { useEffect } from "react";
 
 export const ContentSettingsSection = observer(() => {
     const store = useStore();
@@ -22,6 +22,11 @@ export const ContentSettingsSection = observer(() => {
         store.settingsStore.data.content.body = choice.message.content.trim();
     }
 
+
+    useEffect(() => {
+        store.settingsStore.data.content.name = store.settingsStore.data.content.title;
+    }, [store.settingsStore.data.content.title])
+
     return (
         <div >
             <TextareEditField
@@ -30,6 +35,12 @@ export const ContentSettingsSection = observer(() => {
                 onValueChange={(value) => { store.settingsStore.data.content.title = value }}
                 height={200}
                 placeholder="Card title, html is allowed"
+            />
+            <TextEditField
+                label='Name'
+                value={store.settingsStore.data.content.name}
+                onValueChange={(value) => { store.settingsStore.data.content.name = value }}
+                type="text"
             />
             <ColorField
                 label='Title color'
