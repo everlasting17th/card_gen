@@ -24,11 +24,12 @@ export const ContentSettingsSection = observer(() => {
 
     return (
         <div >
-            <TextEditField
+            <TextareEditField
                 label='Title'
-                type='text'
                 value={store.settingsStore.data.content.title}
                 onValueChange={(value) => { store.settingsStore.data.content.title = value }}
+                height={200}
+                placeholder="Card title, html is allowed"
             />
             <ColorField
                 label='Title color'

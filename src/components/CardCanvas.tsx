@@ -85,7 +85,7 @@ export const CardCanvas = observer(() => {
                                 style={{ backgroundImage: `linear-gradient(0deg, ${foregroundColor} ,transparent), url("${foregroundImage}")` }}>
 
                                 <Center>
-                                    <Text cl={titleColor} as='h2' mt='10px'>{title}</Text>
+                                    <Text w='100%' ta='center' cl={titleColor} as='h2' mt='10px' dangerouslySetInnerHTML={{ __html: title }}></Text>
                                 </Center>
                                 <Divider variant='dotted' />
                                 <div className="canvas-capture__content" style={{ marginLeft: (15 + contentFontSize).toString() + 'px', marginRight: (15).toString() + 'px', fontSize: contentFontSize.toString() + 'pt' }} >
